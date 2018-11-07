@@ -2,15 +2,11 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 
+var cors = require('cors')
 
-app.use((req,res,next) => {
 
-  res.header("Access-Control-Allow-Origin","*");
-  res.header("Access-Control-Allow-Methods", "POST, GET");
-  res.header("Access-Control-Allow-Header","Origin, X-Requested-With, Content-Type, Accept");
-  next();
 
-})
+app.use(cors({origin: 'http://localhost:4200'}))
 
 
 app.get('/', (req, res) => {
@@ -18,23 +14,25 @@ app.get('/', (req, res) => {
 });
 
 //GET
-app.route('/api/heroes').get((req, res) => {
+app.route('/api').get((req, res, next) => {
     res.send({
-      heros: [{ name: 'Shazam' }, { name: 'Batman' }, {name: 'Superman'}]
+      users: [{ email: 'caio.b.santos@hotmail.com', senha: 'teste' }, { email: 'ana.ana@hotmail.com', senha: 'teste2'  }]
     });
   });
-
-app.route('/api/heroes/:name').get((req, res) => {
-    const requestedHeroName = req.params['name']
-    res.send({ name: requestedHeroName });   
-});
 
 
 //POST
 app.use(bodyParser.json());
 
-app.route('/api/heroes').post((req, res) => {
-  res.send(201, req.body);
+app.post('/api/add', function(req, res, next){
+  res.send(req.body);
+  
+  user = {
+    email: req.body.email,
+    senha: req.body.senha
+  }
+
+  console.log(user.email, user.senha);
 });
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
